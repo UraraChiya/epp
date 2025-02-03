@@ -27,10 +27,11 @@ public class GuiPatternModifier extends AEBaseScreen<ContainerPatternModifier> {
     private final List<Button> multiBtns = new ArrayList<>();
 
     private int[] multis ={
-        2, 3, 5, 7, 11, 13,
-        17, 19, 21, 23, 27, 29,
         4, 16, 64, 256, 1024, 4096
     };
+    private int[] divs ={
+        4, 16, 64, 256, 1024, 4096
+    }
 
     public GuiPatternModifier(ContainerPatternModifier menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
@@ -47,6 +48,14 @@ public class GuiPatternModifier extends AEBaseScreen<ContainerPatternModifier> {
                 Button.builder(Component.literal("x"+i),b -> EPPNetworkHandler.INSTANCE.sendToServer(new CGenericPacket("modify", i, false)))
                         .size(23,18)
                         .tooltip(Tooltip.create(Component.literal("x"+i)))
+                        .build()
+            );
+        }
+        for(int i : multis) {
+            this.multiBtns.add(
+                Button.builder(Component.literal("÷"+i),b -> EPPNetworkHandler.INSTANCE.sendToServer(new CGenericPacket("modify", i, true)))
+                        .size(23,18)
+                        .tooltip(Tooltip.create(Component.literal("÷"+i)))
                         .build()
             );
         }
@@ -116,16 +125,19 @@ public class GuiPatternModifier extends AEBaseScreen<ContainerPatternModifier> {
     @Override
     public void init() {
         super.init();
-        for(int i = 0; i < multis.length; i++) {
+
+        int count = multis.length + divs.length;
+        for(int i = 0; i < count; i++) {
             int x = i % 6;
             int y = i / 6;
             this.multiBtns.get(i).setPosition(this.leftPos + 30 * x,this.topPos - 20 - 20 * y);
         }
-        this.multiBtns.get(multis.length + 0).setPosition(this.leftPos + 7, this.topPos + 19);
-        this.multiBtns.get(multis.length + 1).setPosition(this.leftPos + 37, this.topPos + 19);
-        this.multiBtns.get(multis.length + 2).setPosition(this.leftPos + 67, this.topPos + 19);
-        this.multiBtns.get(multis.length + 3).setPosition(this.leftPos + 97, this.topPos + 19);
-        this.multiBtns.get(multis.length + 4).setPosition(this.leftPos + 130, this.topPos + 19);
+
+        this.multiBtns.get(count + 0).setPosition(this.leftPos + 7, this.topPos + 19);
+        this.multiBtns.get(count + 1).setPosition(this.leftPos + 37, this.topPos + 19);
+        this.multiBtns.get(count + 2).setPosition(this.leftPos + 67, this.topPos + 19);
+        this.multiBtns.get(count + 3).setPosition(this.leftPos + 97, this.topPos + 19);
+        this.multiBtns.get(count + 4).setPosition(this.leftPos + 130, this.topPos + 19);
         this.multiBtns.forEach(this::addRenderableWidget);
         this.clone.setPosition(this.leftPos + 79, this.topPos + 35);
         this.addRenderableWidget(this.clone);
